@@ -4,7 +4,7 @@ include 'smtpmail/library.php';
 include "smtpmail/classes/class.phpmailer.php";
 
 ini_set('display_errors', 1);
-error_reporting(E_ALL);
+error_reporting(ERROR);
 
 # general (static) mail account settings
 define("HOST", "smtp.googlemail.com"); // smtp server
@@ -49,7 +49,6 @@ function sendBugReport () {
 	
 	# add attachment
 	$file = $_FILES['file'];
-	var_dump($file);
 	$mail->AddAttachment($file['tmp_name'], $file['name']);
 	
 	$result = $mail->Send(); //Send the mails
