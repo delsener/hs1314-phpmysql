@@ -11,14 +11,23 @@ define("HOST", "smtp.googlemail.com"); // smtp server
 define("PORT", "465"); // port
 define("USER", "murch.buchheim@gmail.com"	); // mail account
 define("PASSWORD", "murch.buchheim2013"); // password
-define("RECIPIENT1", "david.elsener@gmail.com"); // mail account
-define("RECIPIENT2", "david.elsener@gmx.net"); // password
+define("RECIPIENT1", "david.elsener@gmail.com"); // recipient 1
+define("RECIPIENT2", "david.elsener@gmx.net"); // recipient 2
 
 function validatePassword() {
 	if (!isset($_POST["password"])) {
 		return false;
 	}
 	return $_POST["password"] == "mysqlphp2013";
+}
+
+function validateCaptcha() {
+	echo $_SERVER["REMOTE_ADDR"];
+	return recaptcha_check_answer ("6Lc3K-gSAAAAAF5DZIq1vTFisqC1IZGOuuA1uduF",
+			//$_SERVER["REMOTE_ADDR"],
+			"127.0.0.1",
+			$_POST["recaptcha_challenge_field"],
+			$_POST["recaptcha_response_field"]);
 }
 
 

@@ -10,17 +10,21 @@
 	
 	<?php 
 		require 'filebug.php';
+		require 'recaptcha/recaptchalib.php';
 		
 		# handle form submission
 		if (isset($_POST["form_submitted"])) {
-			$errors = array();
-			
 			# validate form data
-			$validation = validatePassword();
-			if ($validation == false) {
-				echo '<p class="error">Das eingegebene Passwort ist ungültig.</p>';
+			$validateCaptcha = validateCaptcha();
+			if (!$validateCaptcha->is_valid) {
+				echo '<p class="error">Das eingegebene Captcha ist ungültig.</p>';
 			} else {
-				sendBugReport();
+				$validation = validatePassword();
+				if ($validation == false) {
+					echo '<p class="error">Das eingegebene Passwort ist ungültig.</p>';
+				} else {
+					sendBugReport();
+				}
 			}
 		}
 	?>
@@ -88,6 +92,10 @@
 		<p class="password">
 			<input type="password" name="password" id="password" required="required" />
 			<label for="password">Passwort</label>
+		</p>
+		
+		<p>
+			<?php echo recaptcha_get_html("6Lc3K-gSAAAAANtj6JOAFwREBZungnJOmFSCaG4A"); ?>
 		</p>
 		
 		<p class="submit">
