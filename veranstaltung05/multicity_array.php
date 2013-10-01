@@ -58,52 +58,62 @@ table {
 		?>
 	</table>
 
-	<h2>
-		Auflistung der St&auml;dte in Asien<br />
-		<ul>
-			<?php 
-			for ($i = 1; $i < count($multiCity); $i++) {
-				if (in_array('Asia', $multiCity[$i])) {
-					echo '<li>'.$multiCity[$i][0].'</li>'	;
-				}
+	<h2>Auflistung der St&auml;dte in Asien</h2>
+	<ul>
+		<?php 
+		for ($i = 1; $i < count($multiCity); $i++) {
+			if (in_array('Asia', $multiCity[$i])) {
+				echo '<li>'.$multiCity[$i][0].'</li>'	;
 			}
-			?>
-		</ul>
-	</h2>
+		}
+		?>
+	</ul>
+
+	<h2>Auflistung der Kontinente, sowie die Zahl der L&auml;nder darin (im
+		Array)</h2>
+	<ul>
+		<?php 
+		// count countries
+		$numArray = array();
+		for ($i = 1; $i < count($multiCity); $i++) {
+			$continent = $multiCity[$i][2];
+			$number = 0;
+			if (key_exists($continent, $numArray)) {
+				$number = $numArray[$continent];
+			}
+			$numArray[$continent] = $number + 1;
+		}
+			
+		foreach ($numArray as $continent => $number) {
+			echo '<li>'.$continent.': '.$number.'</li>';
+		}
+			
+		?>
+	</ul>
 
 	<h2>
-		Auflistung der Kontinente, sowie die Zahl der L&auml;nder darin (im
-		Array)<br />
-		<ul>
-			<?php 
-			// count countries
-			$numArray = array();
-			for ($i = 1; $i < count($multiCity); $i++) {
-				$continent = $multiCity[$i][2];
-				$number = 0;
-				if (key_exists($continent, $numArray)) {
-					$number = $numArray[$continent];
-				}
-				$numArray[$continent] = $number + 1;
-			}
-			
-			foreach ($numArray as $continent => $number) {
-				echo '<li>'.$continent.': '.$number.'</li>';				
-			}
-			
-			?>
-		</ul>
-		
+		Auflistung nach L&auml;nder A-Z <br />
 	</h2>
-	<h2>Auflistung nach L&auml;nder A-Z <br /></h2>
+	<ul>
 		<?php 
+		for ($i = 1; $i < count($multiCity); $i++) {
+			// store countries into separate array
+			$countries[] = $multiCity[$i][1];
+		}
+			
+		// sort countries
+		sort($countries);
+			
+		// print rows following the new country order
+		foreach ($countries as $country) {
 			for ($i = 1; $i < count($multiCity); $i++) {
-				if (in_array('Asia', $multiCity[$i])) {
-					echo '<li>'.$multiCity[$i][0].'</li>'	;
+				if (in_array($country, $multiCity[$i])) {
+					echo '<li>'.$country.': '.$multiCity[$i][2].', '.$multiCity[$i][0].'</li>';
 				}
 			}
+		}
 		?>
-	
+	</ul>
 
 </body>
 </html>
