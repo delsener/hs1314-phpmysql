@@ -1,0 +1,42 @@
+/* Move down content because we have a fixed navbar that is 50px tall */
+body {
+  padding-top: 50px;
+  padding-bottom: 20px;
+}
+
+.navbar-author,
+.navbar-title {
+	color: #FFFFFF;
+}
+
+.navbar-right {
+	padding: 15px 15px;
+	font-size: 16px;
+	line-height: 20px;
+}
+
+label {
+	width: 150px;
+}
+
+input,
+textarea {
+	border: 1px solid grey;
+}
+
+#date,
+#title {
+	width: 150px;
+}
+
+#description {
+	width: 300px;
+}
+
+.task_row0 {
+	background-color: #CEDADB;
+}
+
+#tasklist td {
+	padding: 5px;
+}
