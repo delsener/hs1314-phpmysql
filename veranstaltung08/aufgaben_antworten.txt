@@ -1,0 +1,36 @@
+Aufgabe 4   Erweitern Sie das Data Row Pattern so dass Isolation ohne Transaktionen gegeben sind. Implementieren Sie dazu ein optimitisches Locking Verfahren.
+-----------------------------------------------------------------------
+
+=> Siehe Implementierung im Post.php:
+
+Für das Opstimic Locking habe ich das Attribut "current_version" hinzugefügt. Dieses wird bei jedem Update inkrementiert. Ein Update erfolgt nur dann, wenn die Version immer noch mit der Version übereinstimmt, die beim Lesen des Datensatzes übermittelt wurde. Ansonsten wird eine Exception geworfen.
+
+
+Aufgabe 5   Beschreiben Sie die User Interaktinoen beim optimistischen locking. Als welche Fälle können auftreten und wie soll die Softwware daraug reagieren. Legen Sie die Antworten entweder beschreibend als Textfile ab oder implementieren Sie dieses. 
+-----------------------------------------------------------------------
+Beim optmistischen Locking werden keine Locks auf der DB gesetzt. Man geht "optimistisch" davon aus, dass nicht der gleiche Datensatz von zwei verschiedenen Usern/Transaktionen zur selben Zeit verändert werden. Dennoch muss man verhindern, dass in solch einem Fall ein Update eines zuvor geänderten Datensatzen die Änderungen des vorherigen Updates überschreibt. 
+
+Deshalb habe ich in Aufgabe 4 eine Version eingeführt (im ersten Versuch habe ich es mit einem Timestamp gemacht - dieser war aber nur Sekunden genau, was hier nicht ausreicht), welche bei jedem Update inkrementiert wird. So kann man immer VOR (oder im Where-Clause) dem Update prüfen, ob man immer noch die aktuelle Version in der Hand hält. 
+
+Theoretisch könnte man nun eine etwas intelligentere Fehlerbehandlung machen, z.B.:
+- Wenn eine Optimistic Lock Exception auftritt (Datensatz wurde verändert), könnte man die neue Version laden, vergleichen, welche Attribute anders sind, und falls nur ein anderes Attribut verändert wurde, dieses auf die neue Version übernehmen und trotzdem updaten. Falls nicht gesagt werden kann, was geändert wurde, muss dem User eine Fehlermeldung angezeigt und ihm die Möglichkeit gegeben werden, den Datensatz neuzuladen und seine Änderungen zu speichern.
+
+
+
+Aufgabe 6   Beschreiben Sie einen Deadlock
+-----------------------------------------------------------------------
+Ein Deadlock ist ein Zustand, in welchem zwei Transaktionen aufeinander warten müssen. Dies kann entstehen, wenn nicht exklusive DB Locks (Share Locks) verwendet werden. Eine Abfolge, die zum Deadlock führt, könnte dann so aussehen:
+ 1. Transaktion 1 selektiert einen Datensatz und macht einen Share-Lock
+ 2. Transaktion 2 selektiert ebenfalls einen Datensatz und macht einen Share-Lock
+ 3. Transaktion 1 möchte den Datensatz updaten, muss aber warten, bis Transaktion 2 den Share-Lock aufgehoben hat
+ 4. Transaktion 2 möchte den Datensatz updaten, muss aber warten, bis Transaktion 1 den Share-Lock aufgehoben hat
+
+ => Beide warten jetzt "endlos", weil keiner den Lock aufheben möchte, da beide ein Update durchführen wollen.
+
+
+
+Aufgabe 7   Welche probleme durch mangelnde Transaktionsisolation können durch ein optimistisches locking behoben werden?
+-----------------------------------------------------------------------
+- Lost-Update Problem: Durch Optimistic Locking und einer entsprechenden Fehlerbehandlung können Lost-Update Probleme behoben werden
+- Non-Repeatable-Read: Wenn das Optimistic Locking beispielsweise mit einer Version realisiert ist, könne man dem Non-Repeatable-Read Problem ein wenig entgegenwirken, indem man bei kritischen Business-Operationen vor z.B. Berechnungen nochmals kurz prüft, ob die Version des aktuellen Objektes immer noch aktuell ist und falls nicht, das lesen wiederholen. Natürlich behebt dies das Problem nicht vollständig.
+
